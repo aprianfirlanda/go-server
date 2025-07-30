@@ -3,28 +3,26 @@ package handler
 import (
 	"net/http"
 
+	"github.com/aprianfirlanda/go-server/internal/domain/port"
 	"github.com/aprianfirlanda/go-server/internal/logger"
 	"github.com/gofiber/fiber/v2"
 )
 
-// User represents a sample user object
-type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+type UserHandler struct {
+	service port.UserService
 }
 
-// GetUsersHandler handles GET /api/v1/users
-func GetUsersHandler(c *fiber.Ctx) error {
-	users := []User{
-		{ID: 1, Name: "Aprian", Email: "aprian@example.com"},
-		{ID: 2, Name: "Firlanda", Email: "firlanda@example.com"},
+func NewUserHandler(service port.UserService) *UserHandler {
+	return &UserHandler{service: service}
+}
+
+func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
+	users, err := h.service.FetchUsers()
+	if err != nil {
+		logger.Log.WithError(err).Error("Failed to fetch users")
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch users"})
 	}
 
-	logger.Log.WithFields(map[string]interface{}{
-		"endpoint": "/api/v1/users",
-		"count":    len(users),
-	}).Info("Fetched user list")
-
-	return c.Status(http.StatusOK).JSON(users)
+	logger.Log.WithField("count", len(users)).Info("Users fetched")
+	return c.JSON(users)
 }
