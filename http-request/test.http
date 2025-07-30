@@ -1,0 +1,10 @@
+### GET root path
+GET http://localhost:3000/
+
+###### GET health check
+GET http://localhost:3000/health
+
+###### GET root path
+GET http://localhost:3000/api/v1/users/
+
+###

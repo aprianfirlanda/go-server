@@ -4,9 +4,9 @@ Copyright © 2025 NAME HERE aprianfirlanda@gmail.com
 package cmd
 
 import (
+	"github.com/aprianfirlanda/go-server/internal/adapter/http"
 	"github.com/aprianfirlanda/go-server/internal/config"
 	"github.com/aprianfirlanda/go-server/internal/logger"
-	"github.com/aprianfirlanda/go-server/internal/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,8 +22,8 @@ var httpCmd = &cobra.Command{
 		logger.InitLogger()
 
 		port := viper.GetString("APP_PORT")
-		app := server.NewFiberApp()
-		server.StartServer(app, port)
+		app := http.NewFiberApp()
+		http.StartServer(app, port)
 	},
 }
 

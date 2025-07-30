@@ -11,20 +11,34 @@ A modular Go server application using:
 
 📦 Project Structure
 ```
-.
+go-server/
 ├── cmd/
-│   └── http.go         # CLI command to start HTTP server
+│   └── http.go                # Cobra command to start HTTP server
+├── config/
+│   └── config.go              # Viper config setup (InitConfig)
 ├── internal/
-│   ├── config/         # Viper setup
-│   ├── logger/         # Logrus setup
-│   ├── server/         # Fiber server bootstrap
-│   └── ...
-├── domain/             # Core business logic (hexagonal core)
-├── ports/              # Interfaces for external adapters
-├── adapters/           # Infrastructure implementation (DB, HTTP, etc.)
+│   ├── adapter/
+│   │   ├── http/
+│   │   │   ├── handler/
+│   │   │   │   └── user_handler.go    # Example handler
+│   │   │   ├── router.go              # Fiber route setup
+│   │   │   └── server.go              # Fiber app instance creation
+│   │   └── repository/
+│   │       └── user_repo.go          # DB implementation (outbound)
+│   ├── domain/
+│   │   ├── model/
+│   │   │   └── user.go               # Entity definition
+│   │   └── port/
+│   │       ├── repository.go        # Outbound ports (interfaces)
+│   │       └── service.go           # Inbound ports (use case interfaces)
+│   ├── usecase/
+│   │   └── user_service.go          # Business logic / Application Service
+│   └── logger/
+│       └── logger.go                # Logrus logger setup
+├── .env                            # Only used with `--dev`
 ├── go.mod
-├── main.go
-└── .env                # Local dev environment variables
+├── go.sum
+└── main.go                         # Entrypoint (calls cobra.Execute)
 ```
 
 🚀 Commands
