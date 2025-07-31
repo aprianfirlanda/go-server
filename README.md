@@ -41,7 +41,7 @@ go-server/
 └── main.go                         # Entrypoint (calls cobra.Execute)
 ```
 
-🚀 Commands
+🚀 HTTP Server Commands
 
 Run in development mode (local machine)
 
@@ -102,3 +102,32 @@ go test ./...
 •	Go 1.22+
 •	Cobra CLI (go install github.com/spf13/cobra-cli@latest)
 •	Fiber, Viper, Logrus (go get handles them)
+
+
+
+🛠️ Database Migration Commands
+
+This project uses Goose for database migration management, integrated with Cobra CLI.
+
+Migration files are stored in:
+```
+db/migrations/
+```
+✅ All commands support --dev flag to load environment variables from .env.
+
+
+
+📦 Available Commands
+```shell
+# Apply all up migrations
+go run main.go migrate up --dev
+
+# Rollback the last migration
+go run main.go migrate down --dev
+
+# Rollback everything to version 0
+go run main.go migrate reset --dev
+
+# Create a new migration file (only works in dev mode)
+go run main.go migrate create add-users-table --dev
+```

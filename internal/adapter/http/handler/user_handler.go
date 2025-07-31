@@ -1,28 +1,34 @@
 package handler
 
 import (
-	"net/http"
-
+	"github.com/aprianfirlanda/go-server/internal/domain/model"
 	"github.com/aprianfirlanda/go-server/internal/domain/port"
-	"github.com/aprianfirlanda/go-server/internal/logger"
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
-	service port.UserService
+	usecase port.UserUsecase
 }
 
-func NewUserHandler(service port.UserService) *UserHandler {
-	return &UserHandler{service: service}
+func NewUserHandler(usecase port.UserUsecase) *UserHandler {
+	return &UserHandler{usecase}
+}
+
+func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
+	var user model.User
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request"})
+	}
+	if err := h.usecase.CreateUser(&user); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to create user"})
+	}
+	return c.Status(fiber.StatusCreated).JSON(user)
 }
 
 func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
-	users, err := h.service.FetchUsers()
+	users, err := h.usecase.GetUsers()
 	if err != nil {
-		logger.Log.WithError(err).Error("Failed to fetch users")
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch users"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to get users"})
 	}
-
-	logger.Log.WithField("count", len(users)).Info("Users fetched")
 	return c.JSON(users)
 }

@@ -5,14 +5,18 @@ import (
 	"github.com/aprianfirlanda/go-server/internal/domain/port"
 )
 
-type UserServiceImpl struct {
+type userUsecase struct {
 	repo port.UserRepository
 }
 
-func NewUserService(repo port.UserRepository) port.UserService {
-	return &UserServiceImpl{repo: repo}
+func NewUserUsecase(repo port.UserRepository) port.UserUsecase {
+	return &userUsecase{repo}
 }
 
-func (s *UserServiceImpl) FetchUsers() ([]model.User, error) {
-	return s.repo.GetAll()
+func (u *userUsecase) CreateUser(user *model.User) error {
+	return u.repo.Create(user)
+}
+
+func (u *userUsecase) GetUsers() ([]model.User, error) {
+	return u.repo.FindAll()
 }

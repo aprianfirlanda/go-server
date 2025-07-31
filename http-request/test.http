@@ -1,10 +1,18 @@
 ### GET root path
 GET http://localhost:3000/
 
-###### GET health check
+### GET health check
 GET http://localhost:3000/health
 
-###### GET root path
-GET http://localhost:3000/api/v1/users/
+### POST add users
+POST http://localhost:3000/api/v1/users/
+Content-Type: application/json
 
-###
+{
+  "name": "Aprian Firlanda Imani",
+  "email": "aprianfirlanda@gmail.com"
+}
+
+
+### GET list users
+GET http://localhost:3000/api/v1/users/

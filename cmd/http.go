@@ -6,20 +6,23 @@ package cmd
 import (
 	"github.com/aprianfirlanda/go-server/internal/adapter/http"
 	"github.com/aprianfirlanda/go-server/internal/config"
+	"github.com/aprianfirlanda/go-server/internal/database"
 	"github.com/aprianfirlanda/go-server/internal/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var devMode bool
+var httpDevMode bool
 
 // httpCmd represents the http command
 var httpCmd = &cobra.Command{
 	Use:   "http",
 	Short: "Run the HTTP server",
 	Run: func(cmd *cobra.Command, args []string) {
-		config.InitConfig(devMode)
+		config.InitConfig(httpDevMode)
 		logger.InitLogger()
+
+		database.InitPostgres()
 
 		port := viper.GetString("APP_PORT")
 		app := http.NewFiberApp()
@@ -29,5 +32,5 @@ var httpCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(httpCmd)
-	httpCmd.Flags().BoolVar(&devMode, "dev", false, "Run in development mode using .env")
+	httpCmd.Flags().BoolVar(&httpDevMode, "dev", false, "Run in development mode using .env")
 }
