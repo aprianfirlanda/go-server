@@ -3,13 +3,12 @@ package cmd
 import (
 	"database/sql"
 	"fmt"
+	"github.com/aprianfirlanda/go-server/internal/database"
 
 	"github.com/aprianfirlanda/go-server/internal/config"
 	"github.com/aprianfirlanda/go-server/internal/logger"
-	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var migrateDevMode bool
@@ -87,21 +86,8 @@ func runMigration(action func(*sql.DB) error) {
 	config.InitConfig(migrateDevMode)
 	logger.InitLogger()
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Jakarta",
-		viper.GetString("DB_HOST"),
-		viper.GetString("DB_USER"),
-		viper.GetString("DB_PASSWORD"),
-		viper.GetString("DB_NAME"),
-		viper.GetString("DB_PORT"),
-		viper.GetString("DB_SSLMODE"),
-	)
-
-	db, err := sql.Open("postgres", dsn)
-	if err != nil {
-		logger.Log.WithError(err).Fatal("❌ Failed to connect to DB")
-	}
-	defer db.Close()
+	database.InitPostgres()
+	db, _ := database.DB.DB()
 
 	if err := goose.SetDialect("postgres"); err != nil {
 		logger.Log.WithError(err).Fatal("❌ Failed to set dialect")

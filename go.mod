@@ -4,7 +4,6 @@ go 1.23.5
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.9
-	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
