@@ -1,0 +1,24 @@
+@startuml
+title File Download with Pre-signed URL Redirect
+
+actor "User" as user
+participant "Browser" as browser
+participant "Web Application Backend" as server
+participant "Object Storage Service" as s3
+
+autonumber
+
+user -> browser : Clicks "Download" link
+browser -> server : HTTP GET /download/{file_id}
+activate server
+server -> s3 : Generates Pre-signed GET URL (expires in X min)
+activate s3
+s3 --> server : Returns Pre-signed URL
+deactivate s3
+server --> browser : HTTP 302 Redirect (Location: [Pre-signed URL])
+deactivate server
+browser -> s3 : HTTP GET [Pre-signed URL]
+activate s3
+s3 --> browser : Streams file content
+deactivate s3
+@enduml

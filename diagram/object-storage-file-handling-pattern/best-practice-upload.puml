@@ -1,0 +1,28 @@
+@startuml
+title File Upload with Pre-signed URL
+
+actor "User" as user
+participant "Client-side JS" as client
+participant "Web Application Backend" as server
+participant "Object Storage Service" as s3
+
+autonumber
+
+user -> client : Selects file and clicks "Upload"
+client -> server : API Request: POST /upload-url\n(filename, content-type)
+activate server
+server -> s3 : Generates Pre-signed PUT URL (expires in X min)
+activate s3
+s3 --> server : Returns Pre-signed URL
+deactivate s3
+server --> client : Returns JSON { "uploadUrl": "...", "key": "..." }
+deactivate server
+client -> s3 : HTTP PUT [Pre-signed URL] with file content
+activate s3
+s3 --> client : Returns 200 OK
+deactivate s3
+client -> server : API Request: POST /upload-complete\n(key)
+activate server
+server -> server : Updates database, performs async tasks (e.g., thumbnail generation)
+deactivate server
+@enduml

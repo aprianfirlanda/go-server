@@ -1,0 +1,20 @@
+@startuml
+title Traditional File Upload (Without Pre-signed URLs)
+
+actor "User" as user
+participant "Client-side JS" as client
+participant "Web Application Backend" as server
+participant "Object Storage Service" as s3
+
+autonumber
+
+user -> client : Selects file and clicks "Upload"
+client -> server : HTTP POST /upload\nwith file content
+activate server
+server -> s3 : Uploads file content
+activate s3
+s3 --> server : Returns 200 OK
+deactivate s3
+server --> client : Returns 200 OK
+deactivate server
+@enduml

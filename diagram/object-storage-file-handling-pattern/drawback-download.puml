@@ -1,0 +1,20 @@
+@startuml
+title Traditional File Download (Without Pre-signed URLs)
+
+actor "User" as user
+participant "Browser" as browser
+participant "Web Application Backend" as server
+participant "Object Storage Service" as s3
+
+autonumber
+
+user -> browser : Clicks "Download" link
+browser -> server : HTTP GET /download/{file_id}
+activate server
+server -> s3 : Fetches file content
+activate s3
+s3 --> server : Streams file content
+deactivate s3
+server --> browser : Streams file content
+deactivate server
+@enduml
