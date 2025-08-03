@@ -1,5 +1,5 @@
 @startuml
-title Traditional File Download (Without Pre-signed URLs)
+title File Download with Long-Lived Pre-signed URL
 
 actor "User" as user
 participant "Browser" as browser
@@ -8,13 +8,17 @@ participant "Object Storage Service" as s3
 
 autonumber
 
-user -> browser : Clicks "Download" link
+user -> browser : Clicks “Download Report.”
 browser -> server : HTTP GET /download/{file_id}
 activate server
-server -> s3 : Fetches file content
+server -> s3 : Requests pre-signed GET URL (long expiration time)
 activate s3
-s3 --> server : Streams file content
+s3 --> server : Returns Pre-signed URL
 deactivate s3
-server --> browser : Streams file content
+server --> browser : Returns Pre-signed URL in response
 deactivate server
+browser -> s3 : HTTP GET [Pre-signed URL]
+activate s3
+s3 --> browser : Streams file content
+deactivate s3
 @enduml
