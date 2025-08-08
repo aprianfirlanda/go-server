@@ -12,14 +12,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-var httpDevMode bool
-
 // httpCmd represents the http command
 var httpCmd = &cobra.Command{
 	Use:   "http",
 	Short: "Run the HTTP server",
 	Run: func(cmd *cobra.Command, args []string) {
-		config.InitConfig(httpDevMode)
+		config.InitConfig(isDevMode)
 		logger.InitLogger()
 
 		database.InitPostgres()
@@ -32,5 +30,4 @@ var httpCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(httpCmd)
-	httpCmd.Flags().BoolVar(&httpDevMode, "dev", false, "Run in development mode using .env")
 }

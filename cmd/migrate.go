@@ -11,8 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var migrateDevMode bool
-
 var (
 	migrationCmd = &cobra.Command{
 		Use:   "migrate",
@@ -54,10 +52,10 @@ var (
 		Short: "Create a new migration file",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			config.InitConfig(migrateDevMode)
+			config.InitConfig(isDevMode)
 			logger.InitLogger()
 
-			if !migrateDevMode {
+			if !isDevMode {
 				logger.Log.Fatal("❌ You can only create migration files in development mode. Use --dev flag.")
 				return
 			}
@@ -74,8 +72,6 @@ var (
 func init() {
 	rootCmd.AddCommand(migrationCmd)
 
-	migrationCmd.PersistentFlags().BoolVar(&migrateDevMode, "dev", false, "Run in development mode using .env")
-
 	migrationCmd.AddCommand(upCmd)
 	migrationCmd.AddCommand(downCmd)
 	migrationCmd.AddCommand(resetCmd)
@@ -83,7 +79,7 @@ func init() {
 }
 
 func runMigration(action func(*sql.DB) error) {
-	config.InitConfig(migrateDevMode)
+	config.InitConfig(isDevMode)
 	logger.InitLogger()
 
 	database.InitPostgres()

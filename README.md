@@ -35,7 +35,7 @@ go-server/
 │   │   └── user_service.go          # Business logic / Application Service
 │   └── logger/
 │       └── logger.go                # Logrus logger setup
-├── .env                            # Only used with `--dev`
+├── .env                            # Only used when using 'go run main.go ...' (dev mode)
 ├── go.mod
 ├── go.sum
 └── main.go                         # Entrypoint (calls cobra.Execute)
@@ -43,28 +43,14 @@ go-server/
 
 🚀 HTTP Server Commands
 
-Run in development mode (local machine)
-
-Uses .env file:
-```shell
-go run main.go http --dev
-```
-
-Run in production mode (Docker/Kubernetes)
-
-Uses system environment variables:
+Run this command
 ```shell
 go run main.go http
 ```
 
 ⚙️ Configuration
 
-.env example (for local dev)
-```shell
-PORT=8080
-LOG_LEVEL=debug
-DEV_MODE=true
-```
+copy .env-example to .env and changes the value
 For staging/production, set environment variables via Kubernetes ConfigMap or Docker ENV.
 
 
@@ -113,21 +99,18 @@ Migration files are stored in:
 ```
 db/migrations/
 ```
-✅ All commands support --dev flag to load environment variables from .env.
-
-
 
 📦 Available Commands
 ```shell
 # Apply all up migrations
-go run main.go migrate up --dev
+go run main.go migrate up
 
 # Rollback the last migration
-go run main.go migrate down --dev
+go run main.go migrate down
 
 # Rollback everything to version 0
-go run main.go migrate reset --dev
+go run main.go migrate reset
 
-# Create a new migration file (only works in dev mode)
-go run main.go migrate create add-users-table --dev
+# Create a new migration file (only works in dev mode 'go run main.go ...')
+go run main.go migrate create add-users-table
 ```
